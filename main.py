@@ -6,23 +6,29 @@ mp_drawing_styles = mp.solutions.drawing_styles
 mp_hands = mp.solutions.hands
 import pyautogui as py
 from threading import Thread
+from pynput.keyboard import Key, Controller, Listener#UNNECESSARY?
+
+
+
 
 py.FAILSAFE = False#danger?
 
 x = 50
 y = 50
+click = False
 def mouse_movement():
+    confcount = 0
     while True:
-        w = 1440
-        h = 900
-        # print(py.position())
-        #print(1440-x)
-
-        y1 = 50
-        print(y)
         x1 = 1440 -x
-        #py.moveTo(-int(x), int(y), duration=0)
-        py.moveTo(x1, y)
+        py.moveTo(int(x1), int(y))
+        if click:
+            confcount += 1
+            if confcount > 2:
+                py.click()
+                confcount = 0
+
+
+
 Thread(target=mouse_movement).start()
 
 
@@ -255,6 +261,7 @@ with mp_hands.Hands(
                                     if rightthumby < rightpointerx:
                                         if int(rightthumbslope) <= -1:
                                             print('Thumbs up')
+                                            click = False
                 # THUMBSUPWITHFINGERSPLAYED
                 if rightthumby < rightthumbBaseUpy < rightthumbbaseDowny < rightthumbbasey < rightpalmbottomy:  # handthumbsup, but no fist
                     if rightpointerx > rightpointerDownx:  # look downwards, each finger curled
@@ -262,6 +269,7 @@ with mp_hands.Hands(
                             if rightringx > rightringDownx:
                                 if rightpinkyx > rightpinkyDownx:
                                     print('Thumbs up with fingers splayed')
+                                    click = True
                 # THUMBSDOWN
                 if rightthumby > rightthumbBaseUpy > rightthumbbaseDowny > rightthumbbasey > rightpalmbottomy:  # handthumbsup, but no fist
                     if rightpointerx < rightpointerDownx:  # look downwards, each finger curled
@@ -294,6 +302,7 @@ with mp_hands.Hands(
                                         if rightthumby > rightmiddley:
                                             if int(rightthumbslope) == 0:
                                                 print('Thumbs Level')
+
 
 
 
